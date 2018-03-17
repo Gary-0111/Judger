@@ -32,7 +32,9 @@ SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_fstat64)          calls (INF),
         Allow (SYS_set_thread_area)  calls (INF),
         Allow (SYS_exit_group)       calls (1),
-        Allow (SYS_fcntl64)          calls (INF)
+        Allow (SYS_fcntl64)          calls (INF),
+        Allow (SYS_mmap2)            calls (INF),
+        Allow (SYS_munmap)           calls (INF)
 };
 
 // ------------- x86_64 ---------------

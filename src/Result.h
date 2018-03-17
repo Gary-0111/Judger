@@ -18,7 +18,7 @@ enum SolutionResult {
     Result_PresentationError,   // := 7
     Result_CompilationError,    // := 8
     Result_SystemError,         // := 9
-    Result_DangerouCode         // := 10
+    Result_DangerousCode         // := 10
 };
 
 extern const char *result_str[];

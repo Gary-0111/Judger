@@ -4,3 +4,9 @@
 [2018-03-17 14:54:30] | [SYSTEM ERROR]==> /home/acm/CLionProjects/Judger/src/main.cpp:37: error: File exists(directory: temp)
 [2018-03-17 14:54:41] | [NOTICE]==> Successful compile!
 [2018-03-17 14:57:28] | [NOTICE]==> Successful compile!
+[2018-03-17 15:29:39] | [NOTICE]==> Successful compile!
+[2018-03-17 15:29:39] | [WARNING]==> The child process trys to call a limited system call: SYS_mmap2.
+[2018-03-17 15:30:37] | [NOTICE]==> Successful compile!
+[2018-03-17 15:30:51] | [NOTICE]==> Successful compile!
+[2018-03-17 15:30:51] | [WARNING]==> The child process trys to call a limited system call: SYS_munmap.
+[2018-03-17 15:31:03] | [NOTICE]==> Successful compile!
