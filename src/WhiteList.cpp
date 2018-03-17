@@ -52,6 +52,8 @@ SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_readlink)         calls (1),
         Allow (SYS_arch_prctl)       calls (1),
         Allow (SYS_exit_group)       calls (1),
+        Allow (SYS_mmap)             calls (INF),
+        Allow (SYS_munmap)           calls (INF),
 
         Allow (SYS_time)             calls (INF),
         Allow (SYS_sysinfo)          calls (INF),
