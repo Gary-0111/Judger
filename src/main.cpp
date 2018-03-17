@@ -9,9 +9,6 @@
 #include "Executor.h"
 #include "Result.h"
 
-Option option;
-Result result;
-
 const char *working_dir = "temp";
 
 int main(int argc, char *argv[]) {

@@ -38,5 +38,7 @@ private:
     unsigned long memory_limit;                 // KB
 };
 
+extern Option option;
+
 
 #endif //JUDGER_OPTION_H

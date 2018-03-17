@@ -30,6 +30,7 @@ public:
     void setResult(SolutionResult _res);
     SolutionResult getResult();
     void updateUsedTime(Time _usedTime);
+    void setUsedTime(Time _usedTime);
     void updateUsedMemory(unsigned long _usedMem);
     void printResult();
     bool memoryExceed(unsigned long _memLim);
@@ -40,6 +41,8 @@ private:
     Time used_time;
     unsigned long used_memory;
 };
+
+extern Result result;
 
 
 #endif //JUDGER_RESULT_H

@@ -8,6 +8,8 @@
 #include <string.h>
 #include "Logger.h"
 
+Option option;
+
 const char* Option::judge_user_name = "acm";
 
 const char *LangStr[] = {

@@ -22,8 +22,11 @@
 #include <sys/reg.h>
 #include <sys/resource.h>
 
-extern Option option;
-extern Result result;
+#ifdef __i386__
+#define REGISTERA 4*ORIG_EAX
+#else
+#define REGISTERA 8*ORIG_RAX
+#endif
 
 int Executor::execute(const char *exe_path) {
 
@@ -109,23 +112,25 @@ int Executor::execute(const char *exe_path) {
         } else {
             // 监控子进程的系统调用,并监测子进程使用的内存及时间
             int status;
+            whitelist.init();
             /*
             memset(syscall_cnt, 0, sizeof(syscall_cnt));
             initWhiteList();
-            outputWhiteList();
              */
+            //outputWhiteList();
+
             Time caseTime;
             struct rusage rused;
             while (true) {
                 wait4(pid, &status, 0, &rused);
 
                 // Get the system call ID.
-                int syscall_id = ptrace(PTRACE_PEEKUSER, pid, 4 * ORIG_EAX, NULL);
-                //syscall_cnt[syscall_id]++;
+                int syscall_id = ptrace(PTRACE_PEEKUSER, pid, REGISTERA, NULL);
+                whitelist.callSyscall(syscall_id);
 
                 // Check if the child process is terminated normally.
                 if(WIFEXITED(status)) {
-                    //outputSyscall();
+                    whitelist.outputSyscall();
                     fprintf(stderr, "User's process was terminated normally.\n");
 
                     SolutionResult tmpRes = comparer.compare(std_output_file, usr_output_file);
@@ -151,8 +156,8 @@ int Executor::execute(const char *exe_path) {
                             break;
                         //OLE
                         case SIGXFSZ:
+                            result.setResult(Result_OutputLimitExceed);
                             break;
-
                         // RE
                         case SIGSEGV: case SIGABRT:
                         default:
@@ -160,28 +165,33 @@ int Executor::execute(const char *exe_path) {
                             break;
                     }
                     ptrace(PTRACE_KILL, pid);
-                    //outputSyscall();
+                    whitelist.outputSyscall();
                     fprintf(stderr, "Userexe was killed! The terminated signal is: %s\n", strsignal(signo));
                     if(result.getResult() == Result_TimeLimitExceed){
-                        result.updateUsedTime(Time(rused.ru_stime) + Time(rused.ru_utime));
+                        //printf("hjkdghsjkghfsjkghjkghfsjkhgkjfd\n");
+                        result.setUsedTime(Time(option.getTimeLimit()));
                     }
                     break;
                 }
 
                 // Check if the system call is valid.
-                /*
-                if(!isValidSyscall(syscall_id)) {
-                    clog << "The child process trys to call a limited system call: " << syscall_list[syscall_id] << "\n";
+
+                if(!(whitelist.checkSyscall(syscall_id))) {
+                    whitelist.outputSyscall();
+                    sprintf(err, "The child process trys to call a limited system call: %s.", whitelist.getSyscallName(syscall_id));
+                    logger.logWarning(err);
                     ptrace(PTRACE_KILL, pid);
-                    result = Result_DangerouCode;
+                    result.setResult(Result_DangerouCode);
                     break;
                 }
-                 */
+
 
                 // Check if the child process is MLE.
                 result.updateUsedMemory(getMemory(pid));
                 if(result.memoryExceed(option.getMemoryLimit())) {
+                    whitelist.outputSyscall();
                     ptrace(PTRACE_KILL, pid);
+                    result.updateUsedTime(Time(rused.ru_stime) + Time(rused.ru_utime));
                     result.setResult(Result_MemoryLimitExceed);
                     break;
                 }
@@ -191,26 +201,28 @@ int Executor::execute(const char *exe_path) {
                 if(result.getResult() == Result_Running || result.getResult() == Result_PresentationError)
                     caseTime = Time(rused.ru_stime) + Time(rused.ru_utime);
                 if(result.getUsedTime() + caseTime > option.getTimeLimit()) {
+                    whitelist.outputSyscall();
                     ptrace(PTRACE_KILL, pid);
                     //timeUsed = timeLimit;
                     result.updateUsedTime(caseTime);
+                    result.updateUsedMemory(getMemory(pid));
                     result.setResult(Result_TimeLimitExceed);
                     break;
                 }
-
 
                 // Continue the child process until next time it calls a system call.
                 ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
             }
 
             //
+            /*
             if(result.getResult() == Result_Running || result.getResult() == Result_PresentationError)
                 result.updateUsedTime(Time(rused.ru_stime) + Time(rused.ru_utime));
             if(result.timeExceed(option.getTimeLimit())) {
                 result.setResult(Result_TimeLimitExceed);
                 //timeUsed = timeLimit;
             }
-
+            */
         }
     }
 
@@ -219,7 +231,7 @@ int Executor::execute(const char *exe_path) {
         result.printResult();
     }
 
-    //closedir(dir);
+    closedir(dir);
 
     return 0;
 }
@@ -258,14 +270,19 @@ unsigned long Executor::getMemory(pid_t pid) {
 void Executor::setLimit() {
     char err[1024];
     rlimit lim;
-    //时间限制
-    lim.rlim_cur = (option.getTimeLimit() + 999) / 1000;
+    // 时间限制
+    lim.rlim_cur = (option.getTimeLimit() - result.getUsedTime().milliseconds + 999) / 1000;
     lim.rlim_max = lim.rlim_cur;
     if(setrlimit(RLIMIT_CPU, &lim) < 0) {
         sprintf(err, "%s:%d: error: %s", __FILE__, __LINE__, strerror(errno));
         logger.logSysErr(err);
         exit(1);
     }
+
+    // 栈空间限制
+
+    // 输出文件限制
+
 }
 
 void Executor::IORedirect(const char *std_input_file, const char *usr_output_file) {

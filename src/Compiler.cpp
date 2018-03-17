@@ -4,6 +4,7 @@
 
 #include "Compiler.h"
 #include "Logger.h"
+#include "Result.h"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
@@ -33,7 +34,7 @@ int Compiler::compile(const char *sourceCode) {
         if(WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS) {
             logger.logNotice("Successful compile!");
         } else {
-            // result = Result_CompilationError;
+            result.setResult(Result_CompilationError);
             printf("Exit code: %d\n", WEXITSTATUS(status));
             logger.logNotice("Compile user's code failed.");
             ret = 1;

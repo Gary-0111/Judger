@@ -7,6 +7,8 @@
 
 #define max(a,b) a<b?b:a
 
+Result result;
+
 const char *result_str[] = {
         "Running",
         "Accepted",
@@ -57,4 +59,8 @@ bool Result::timeExceed(unsigned long _timeLim) {
 
 Time Result::getUsedTime() {
     return used_time;
+}
+
+void Result::setUsedTime(Time _usedTime) {
+    used_time = _usedTime;
 }

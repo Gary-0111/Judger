@@ -6,6 +6,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <signal.h>
+#include <cstdlib>
 
 char Clock::time_buffer[128];
 
@@ -13,16 +14,22 @@ void Clock::setAlarm(int which, int milliseconds, void (*Handler)(int)) {
 
     switch(which) {
         case ITIMER_REAL:
-            signal(SIGALRM, Handler);
+            if(signal(SIGALRM, Handler) == SIG_ERR) {
+                exit(1);
+            }
             break;
         case ITIMER_VIRTUAL:
-            signal(SIGVTALRM, Handler);
+            if(signal(SIGVTALRM, Handler) == SIG_ERR) {
+                exit(1);
+            }
             break;
         case ITIMER_PROF:
-            signal(SIGPROF, Handler);
+            if(signal(SIGPROF, Handler) == SIG_ERR) {
+                exit(1);
+            }
             break;
         default:
-            break;
+            exit(1);
     }
 
     struct itimerval it;
@@ -32,7 +39,9 @@ void Clock::setAlarm(int which, int milliseconds, void (*Handler)(int)) {
     it.it_interval.tv_sec = 0;
     it.it_interval.tv_usec = 0;
 
-    setitimer(which, &it, NULL);
+    if(setitimer(which, &it, NULL)) {
+        exit(1);
+    }
 }
 
 const char *Clock::getTime() {
