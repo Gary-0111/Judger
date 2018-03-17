@@ -26,6 +26,7 @@ public:
     const char* getDataDir();
     unsigned long getTimeLimit();
     unsigned long getMemoryLimit();
+    unsigned long getOutputLimit();
 
 private:
     Language parseLanguage(const char *argstr);
@@ -36,6 +37,7 @@ private:
     char data_dir[256];
     unsigned long time_limit;                   // ms
     unsigned long memory_limit;                 // KB
+    unsigned long output_limit;                 // KB
 };
 
 extern Option option;

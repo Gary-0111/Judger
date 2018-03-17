@@ -10,7 +10,7 @@
 
 Option option;
 
-const char* Option::judge_user_name = "huang";
+const char* Option::judge_user_name = "acm";
 
 const char *LangStr[] = {
         "Unknown",
@@ -20,19 +20,20 @@ const char *LangStr[] = {
 };
 
 void Option::printUsage() {
-    printf("Usage: ./Judge -l language -d data_directory           \n");
-    printf("               -t time_limit -m memory_limit           \n");
-    printf("                                                       \n");
-    printf("Options:                                               \n");
-    printf("     -l      The solution's language [C|C++|Java]      \n");
-    printf("     -d      Data's directory.                         \n");
-    printf("     -t      Time limit. Millisecond by default.       \n");
-    printf("     -m      Memory limit. Kilo-Bytes by default. [K|M]\n");
+    printf("Usage: ./Judge -l language -d data_directory                \n");
+    printf("               -t time_limit -m memory_limit                \n");
+    printf("                                                            \n");
+    printf("Options:                                                    \n");
+    printf("     -l      The solution's language [C|C++|Java]           \n");
+    printf("     -d      Data's directory.                              \n");
+    printf("     -t      Time limit. Millisecond by default.            \n");
+    printf("     -m      Memory limit. Kilo-Bytes by default. [K|M]     \n");
+    printf("     -o      Output file limit. Kilo-Bytes by default. [K|M]\n");
 }
 
 int Option::parseParameters(int argc, char * const * argv) {
     int ch;
-    while((ch = getopt(argc, argv, "l:d:t:m:")) != -1) {
+    while((ch = getopt(argc, argv, "l:d:t:m:o:")) != -1) {
         switch(ch) {
             case 'l':
                 if((lang = parseLanguage(optarg)) == Lang_Unknown) return -1;
@@ -46,6 +47,9 @@ int Option::parseParameters(int argc, char * const * argv) {
             case 'm':
                 sscanf(optarg, "%lu", &memory_limit);
                 break;
+            case 'o':
+                sscanf(optarg, "%lu", &output_limit);
+                break;
             case '?':
                 fprintf(stderr, "Invalid options -- '%c'\n", optopt);
                 return -1;
@@ -53,7 +57,7 @@ int Option::parseParameters(int argc, char * const * argv) {
                 break;
         }
     }
-    if(argc != 9) return -1;
+    if(argc != 11) return -1;
     return 0;
 }
 
@@ -85,4 +89,8 @@ void Option::printOptions() {
     printf("Data directory:  %s\n", data_dir);
     printf("Time Limit:      %lu ms\n", time_limit);
     printf("Memory Limit:    %lu KB\n", memory_limit);
+}
+
+unsigned long Option::getOutputLimit() {
+    return output_limit;
 }
