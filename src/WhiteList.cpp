@@ -16,6 +16,7 @@
 
 // --------------- x86 ----------------
 #ifdef __i386__
+
 const char* WhiteList::syscallpath = "../syscall/syscall_x86.txt";
 
 SyscallLimit WhiteList::cpp_limit[] = {
@@ -33,6 +34,7 @@ SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_exit_group)       calls (1),
         Allow (SYS_fcntl64)          calls (INF)
 };
+
 // ------------- x86_64 ---------------
 #else
 const char* WhiteList::syscallpath = "../syscall/syscall_x86_64.txt";
@@ -54,7 +56,6 @@ SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_set_thread_area)  calls (INF)
 };
 #endif
-
 
 
 WhiteList::WhiteList() {

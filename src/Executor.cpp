@@ -282,7 +282,14 @@ void Executor::setLimit() {
     // 栈空间限制
 
     // 输出文件限制
-
+    lim.rlim_max = option.getOutputLimit() * 1024;
+    lim.rlim_cur = lim.rlim_max;
+    //LOG_BUG("rlim_fsize %d",lim.rlim_max);
+    if(setrlimit(RLIMIT_FSIZE,&lim) < 0){
+        sprintf(err, "%s:%d: error: %s", __FILE__, __LINE__, strerror(errno));
+        logger.logSysErr(err);
+        exit(1);
+    }
 }
 
 void Executor::IORedirect(const char *std_input_file, const char *usr_output_file) {

@@ -1,0 +1,6 @@
+[2018-03-17 14:52:35] | [NOTICE]==> Parse parameters failed.
+[2018-03-17 14:53:21] | [NOTICE]==> Successful compile!
+[2018-03-17 14:53:21] | [SYSTEM ERROR]==> /home/acm/CLionProjects/Judger/src/Executor.cpp:49: error: Success(No user named: huang)
+[2018-03-17 14:54:30] | [SYSTEM ERROR]==> /home/acm/CLionProjects/Judger/src/main.cpp:37: error: File exists(directory: temp)
+[2018-03-17 14:54:41] | [NOTICE]==> Successful compile!
+[2018-03-17 14:57:28] | [NOTICE]==> Successful compile!
