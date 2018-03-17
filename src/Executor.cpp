@@ -181,7 +181,7 @@ int Executor::execute(const char *exe_path) {
                     sprintf(err, "The child process trys to call a limited system call: %s.", whitelist.getSyscallName(syscall_id));
                     logger.logWarning(err);
                     ptrace(PTRACE_KILL, pid);
-                    result.setResult(Result_DangerouCode);
+                    result.setResult(Result_DangerousCode);
                     break;
                 }
 
