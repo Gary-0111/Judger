@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sys/stat.h>
-#include <zconf.h>
+#include <unistd.h>
 #include <cstring>
 #include "Logger.h"
 #include "Option.h"

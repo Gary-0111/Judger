@@ -14,10 +14,10 @@
 #define calls(t)  (t))
 #define INF -1
 
-const char* WhiteList::syscallpath = "../syscall/syscall.txt";
-
 // --------------- x86 ----------------
 #ifdef __i386__
+const char* WhiteList::syscallpath = "../syscall/syscall_x86.txt";
+
 SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_read)             calls (INF),
         Allow (SYS_write)            calls (INF),
@@ -35,20 +35,23 @@ SyscallLimit WhiteList::cpp_limit[] = {
 };
 // ------------- x86_64 ---------------
 #else
+const char* WhiteList::syscallpath = "../syscall/syscall_x86_64.txt";
+
 SyscallLimit WhiteList::cpp_limit[] = {
         Allow (SYS_read)             calls (INF),
         Allow (SYS_write)            calls (INF),
-        Allow (SYS_execve)           calls (1),
-        Allow (SYS_time)             calls (INF),
-        Allow (SYS_access)           calls (INF),
+        Allow (SYS_fstat)            calls (INF),
         Allow (SYS_brk)              calls (INF),
-        Allow (SYS_readlink)         calls (1),
-        Allow (SYS_sysinfo)          calls (INF),
+        Allow (SYS_access)           calls (INF),
+        Allow (SYS_execve)           calls (1),
         Allow (SYS_uname)            calls (INF),
-        Allow (SYS_fstat64)          calls (INF),
-        Allow (SYS_set_thread_area)  calls (INF),
+        Allow (SYS_readlink)         calls (1),
+        Allow (SYS_arch_prctl)       calls (1),
         Allow (SYS_exit_group)       calls (1),
-        Allow (SYS_fcntl64)          calls (INF)
+
+        Allow (SYS_time)             calls (INF),
+        Allow (SYS_sysinfo)          calls (INF),
+        Allow (SYS_set_thread_area)  calls (INF)
 };
 #endif
 

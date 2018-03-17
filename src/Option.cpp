@@ -10,7 +10,7 @@
 
 Option option;
 
-const char* Option::judge_user_name = "acm";
+const char* Option::judge_user_name = "huang";
 
 const char *LangStr[] = {
         "Unknown",
